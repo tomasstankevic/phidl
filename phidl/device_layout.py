@@ -661,6 +661,7 @@ class Device(gdspy.Cell, _GeometryHelper):
         return filename
 
 
+<<<<<<< HEAD
     def remap_layers_wo_paths(self, layermap = {}, include_labels = True):
         layermap = {_parse_layer(k):_parse_layer(v) for k,v in layermap.items()}
 
@@ -685,6 +686,8 @@ class Device(gdspy.Cell, _GeometryHelper):
                         l.texttype = new_layer[1]
         return self
 
+=======
+>>>>>>> 51da7d2b024cf214bcead12dc5273ba58673d102
     def remap_layers(self, layermap = {}, include_labels = True):
         layermap = {_parse_layer(k):_parse_layer(v) for k,v in layermap.items()}
 
@@ -699,6 +702,7 @@ class Device(gdspy.Cell, _GeometryHelper):
                         new_layer = layermap[original_layer]
                         p.layers[n] = new_layer[0]
                         p.datatypes[n] = new_layer[1]
+<<<<<<< HEAD
 
             for p in D.paths:
                 for n, layer in enumerate(p.layers):
@@ -709,6 +713,8 @@ class Device(gdspy.Cell, _GeometryHelper):
                             p.layers[n] = new_layer[0]
                             p.datatypes[n] = new_layer[1]
 
+=======
+>>>>>>> 51da7d2b024cf214bcead12dc5273ba58673d102
             if include_labels == True:
                 for l in D.labels:
                     original_layer = (l.layer, l.texttype)
@@ -732,6 +738,7 @@ class Device(gdspy.Cell, _GeometryHelper):
                 polygonset.layers =    [p for p,keep in zip(polygonset.layers,    polygons_to_keep) if keep]
                 polygonset.datatypes = [p for p,keep in zip(polygonset.datatypes, polygons_to_keep) if keep]
 
+<<<<<<< HEAD
             new_paths = []
             for p in D.paths:
                 original_layer = (p.layers[0], p.datatypes[0])
@@ -742,6 +749,8 @@ class Device(gdspy.Cell, _GeometryHelper):
                     new_paths += [p]
             D.paths = new_paths
 
+=======
+>>>>>>> 51da7d2b024cf214bcead12dc5273ba58673d102
             if include_labels == True:
                 new_labels = []
                 for l in D.labels:

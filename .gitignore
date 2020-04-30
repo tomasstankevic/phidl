@@ -82,4 +82,7 @@ target/
 *.bat
 *.lyp
 *.oas
+<<<<<<< HEAD
 .vscode/settings.json
+=======
+>>>>>>> 51da7d2b024cf214bcead12dc5273ba58673d102
