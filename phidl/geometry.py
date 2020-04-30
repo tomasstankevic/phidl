@@ -16,11 +16,7 @@ import json
 import warnings
 from functools import update_wrapper
 
-<<<<<<< HEAD
 _mpone = np.array((-1.0, 1.0))
-=======
-
->>>>>>> 51da7d2b024cf214bcead12dc5273ba58673d102
 
 ##### Categories:
 # Polygons / shapes
