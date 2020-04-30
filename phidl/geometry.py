@@ -857,11 +857,6 @@ def litho_calipers(
 #
 #==============================================================================
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 51da7d2b024cf214bcead12dc5273ba58673d102
 def extract(D, layers = [0,1]):
     D_extracted = Device('extract')
     if type(layers) not in (list, tuple):
@@ -873,7 +868,6 @@ def extract(D, layers = [0,1]):
             D_extracted.add_polygon(polys, layer = layer)
     return D_extracted
 
-<<<<<<< HEAD
 def extract_w_paths(D, layers = [0,1]):
     D_extracted = Device('extract')
     if type(layers) not in (list, tuple):
@@ -899,8 +893,6 @@ def extract_w_paths(D, layers = [0,1]):
             D_extracted.add(label, layer = layer)
     return D_extracted
 
-=======
->>>>>>> 51da7d2b024cf214bcead12dc5273ba58673d102
 
 def copy(D):
     D_copy = Device(name = D._internal_name)
@@ -966,10 +958,7 @@ def import_gds(filename, cellname = None, flatten = False):
         for cell in gdsii_lib.cells.values():
             D = Device(name = cell.name)
             D.polygons = cell.polygons
-<<<<<<< HEAD
             D.paths = cell.paths
-=======
->>>>>>> 51da7d2b024cf214bcead12dc5273ba58673d102
             D.references = cell.references
             D.name = cell.name
             D.labels = cell.labels
@@ -1005,23 +994,17 @@ def import_gds(filename, cellname = None, flatten = False):
                     dr.owner = D
                     converted_references.append(dr)
             D.references = converted_references
-<<<<<<< HEAD
             
-=======
->>>>>>> 51da7d2b024cf214bcead12dc5273ba58673d102
             # Next convert each Polygon
             temp_polygons = list(D.polygons)
             D.polygons = []
             for p in temp_polygons:
                 D.add_polygon(p)
-<<<<<<< HEAD
             # Next convert paths to polygonSets
             #temp_paths = list(D.paths)
             #for p in temp_paths:
             #    PolySet = p.to_polygonset()
             #    D.add_polygon(PolySet)
-=======
->>>>>>> 51da7d2b024cf214bcead12dc5273ba58673d102
 
         topdevice = c2dmap[topcell]
         return topdevice
@@ -1034,10 +1017,6 @@ def import_gds(filename, cellname = None, flatten = False):
             D.add_polygon(polys, layer = layer_in_gds)
         return D
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 51da7d2b024cf214bcead12dc5273ba58673d102
 def _translate_cell(c):
     D = Device(name = c.name)
     for e in c.elements:
