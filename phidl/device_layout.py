@@ -661,7 +661,7 @@ class Device(gdspy.Cell, _GeometryHelper):
         return filename
 
 
-    def remap_layers(self, layermap = {}, include_labels = True):
+    def remap_layers_wo_paths(self, layermap = {}, include_labels = True):
         layermap = {_parse_layer(k):_parse_layer(v) for k,v in layermap.items()}
 
         all_D = list(self.get_dependencies(True))
@@ -685,6 +685,40 @@ class Device(gdspy.Cell, _GeometryHelper):
                         l.texttype = new_layer[1]
         return self
 
+    def remap_layers(self, layermap = {}, include_labels = True):
+        layermap = {_parse_layer(k):_parse_layer(v) for k,v in layermap.items()}
+
+        all_D = list(self.get_dependencies(True))
+        all_D += [self]
+        for D in all_D:
+            for p in D.polygons:
+                for n, layer in enumerate(p.layers):
+                    original_layer = (p.layers[n], p.datatypes[n])
+                    original_layer = _parse_layer(original_layer)
+                    if original_layer in layermap.keys():
+                        new_layer = layermap[original_layer]
+                        p.layers[n] = new_layer[0]
+                        p.datatypes[n] = new_layer[1]
+
+            for p in D.paths:
+                for n, layer in enumerate(p.layers):
+                    original_layer = (p.layers[0], p.datatypes[0])
+                    original_layer = _parse_layer(original_layer)
+                    if original_layer in layermap.keys():
+                            new_layer = layermap[original_layer]
+                            p.layers[n] = new_layer[0]
+                            p.datatypes[n] = new_layer[1]
+
+            if include_labels == True:
+                for l in D.labels:
+                    original_layer = (l.layer, l.texttype)
+                    original_layer = _parse_layer(original_layer)
+                    if original_layer in layermap.keys():
+                        new_layer = layermap[original_layer]
+                        l.layer = new_layer[0]
+                        l.texttype = new_layer[1]
+        return self
+
     def remove_layers(self, layers = (), include_labels = True, invert_selection = False):
         layers = [_parse_layer(l) for l in layers]
         all_D = list(self.get_dependencies(True))
@@ -697,6 +731,16 @@ class Device(gdspy.Cell, _GeometryHelper):
                 polygonset.polygons =  [p for p,keep in zip(polygonset.polygons,  polygons_to_keep) if keep]
                 polygonset.layers =    [p for p,keep in zip(polygonset.layers,    polygons_to_keep) if keep]
                 polygonset.datatypes = [p for p,keep in zip(polygonset.datatypes, polygons_to_keep) if keep]
+
+            new_paths = []
+            for p in D.paths:
+                original_layer = (p.layers[0], p.datatypes[0])
+                original_layer = _parse_layer(original_layer)
+                if invert_selection: keep_layer = (original_layer in layers)
+                else:                keep_layer = (original_layer not in layers)
+                if keep_layer:
+                    new_paths += [p]
+            D.paths = new_paths
 
             if include_labels == True:
                 new_labels = []

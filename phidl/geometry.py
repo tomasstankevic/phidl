@@ -16,7 +16,7 @@ import json
 import warnings
 from functools import update_wrapper
 
-
+_mpone = np.array((-1.0, 1.0))
 
 ##### Categories:
 # Polygons / shapes
@@ -853,8 +853,6 @@ def litho_calipers(
 #
 #==============================================================================
 
-
-
 def extract(D, layers = [0,1]):
     D_extracted = Device('extract')
     if type(layers) not in (list, tuple):
@@ -864,6 +862,31 @@ def extract(D, layers = [0,1]):
     for layer, polys in poly_dict.items():
         if _parse_layer(layer) in parsed_layer_list:
             D_extracted.add_polygon(polys, layer = layer)
+    return D_extracted
+
+def extract_w_paths(D, layers = [0,1]):
+    D_extracted = Device('extract')
+    if type(layers) not in (list, tuple):
+        raise ValueError('[PHIDL] pg.extract() Argument `layers` needs to be passed a list or tuple')
+    parsed_layer_list = [_parse_layer(layer) for layer in layers]
+
+    poly_dict = D.get_polygons(by_spec = True, depth=None, include_paths=False)
+    parsed_layer_list = [_parse_layer(layer) for layer in layers]
+    for layer, polys in poly_dict.items():
+        if _parse_layer(layer) in parsed_layer_list:
+            D_extracted.add_polygon(polys, layer = layer)
+
+    paths = D.get_paths()
+    for path in paths:
+        layer = path.layers
+        if _parse_layer(layer) in parsed_layer_list:
+            D_extracted.add(path)
+
+    labels = D.get_labels()
+    for label in labels:
+        layer = label.layers
+        if _parse_layer(layer) in parsed_layer_list:
+            D_extracted.add(label, layer = layer)
     return D_extracted
 
 
@@ -931,6 +954,7 @@ def import_gds(filename, cellname = None, flatten = False):
         for cell in gdsii_lib.cells.values():
             D = Device(name = cell.name)
             D.polygons = cell.polygons
+            D.paths = cell.paths
             D.references = cell.references
             D.name = cell.name
             D.labels = cell.labels
@@ -966,11 +990,17 @@ def import_gds(filename, cellname = None, flatten = False):
                     dr.owner = D
                     converted_references.append(dr)
             D.references = converted_references
+            
             # Next convert each Polygon
             temp_polygons = list(D.polygons)
             D.polygons = []
             for p in temp_polygons:
                 D.add_polygon(p)
+            # Next convert paths to polygonSets
+            #temp_paths = list(D.paths)
+            #for p in temp_paths:
+            #    PolySet = p.to_polygonset()
+            #    D.add_polygon(PolySet)
 
         topdevice = c2dmap[topcell]
         return topdevice
@@ -982,7 +1012,6 @@ def import_gds(filename, cellname = None, flatten = False):
         for layer_in_gds, polys in polygons.items():
             D.add_polygon(polys, layer = layer_in_gds)
         return D
-
 
 def _translate_cell(c):
     D = Device(name = c.name)
